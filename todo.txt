@@ -1,3 +1,7 @@
 
 Overall: 
 - Add exception handling
+- Periods at end of docstrings
+- Remove prints outside of IO class
+- Testing procedure?
+- Ensure all code is being used

@@ -19,33 +19,3 @@ class Admin(User):
                 f"'user_password':'{self.user_password}', " 
                 f"'user_register_time':'{self.user_register_time}', " 
                 f"'user_role':'{self.user_role}'}}")
-    
-    def get_user_id(self):
-        return super().get_user_id()
-    
-    def get_user_name(self):
-        return super().get_user_name()
-    
-    def get_user_password(self):
-        return super().get_user_password()
-    
-    def get_user_register_time(self):
-        return super().get_user_register_time()
-    
-    def get_user_role(self):
-        return super().get_user_role()
-    
-    def set_user_id(self, user_id):
-        super().set_user_id(user_id)
-
-    def set_user_name(self, user_name):
-        super().set_user_name(user_name)
-
-    def set_user_password(self, user_password):
-        super().set_user_password(user_password)
-
-    def set_user_register_time(self, user_register_time):
-        super().set_user_register_time(user_register_time)
-
-    def set_user_role(self, user_role):
-        super().set_user_role(user_role)

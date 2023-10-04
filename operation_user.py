@@ -65,8 +65,8 @@ class UserOperation:
 
     def check_username_exist(self, user_name):
         """Checks if the username already exists.
-        Arguments: user_name
-        Return True/ False"""
+        Arguments: user_name.
+        Return True/ False."""
         # Check whether user_name in users.txt
         file = open("data/users.txt", "r")
         user_list = file.readlines()
@@ -78,8 +78,8 @@ class UserOperation:
 
     def validate_username(self, user_name):
         """Validates the username.
-        Arguments: user_name
-        Return True/ False"""
+        Arguments: user_name.
+        Return True/ False."""
         if len(user_name) < 5:
             return False
         # Check username contains only letters and underscores
@@ -90,8 +90,8 @@ class UserOperation:
 
     def validate_password(self, user_password):
         """Validates the password.
-        Arguments: user_password
-        Return True/ False"""
+        Arguments: user_password.
+        Return True/ False."""
         if len(user_password) < 5:
             return False
         elif (re.search("[A-Z]", user_password) == None and
@@ -104,8 +104,8 @@ class UserOperation:
 
     def login(self, user_name, user_password):
         """Logs in the user.
-        Arguments: user_name, user_password
-        Return Customer/ Admin object depending on authorisation"""
+        Arguments: user_name, user_password.
+        Return Customer/ Admin object depending on authorisation."""
         file = open("data/users.txt", "r")
         user_list = file.readlines()
         file.close()

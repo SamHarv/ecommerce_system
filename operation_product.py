@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 
 class ProductOperation:
-    """Contains all the operations related to the product"""
+    """Contains all the operations related to the product."""
 
     products_df = pd.DataFrame()
 
@@ -55,6 +55,11 @@ class ProductOperation:
                                                             "likes_count":
                                                             "pro_likes_count"})
 
+        for product in self.products_df.index:
+            # if name contains commas, remove the row from dataframe
+            if "," in self.products_df['pro_name'][product]:
+                self.products_df = self.products_df.drop(product)
+
         # Convert dataframe to list of strings
         products_list = []
         for i in self.products_df.index:
@@ -82,10 +87,10 @@ class ProductOperation:
         file.close()
 
     def get_product_list(self, page_number):
-        """Get a list of products within a given page range
-        Arguments: page_number
+        """Get a list of products within a given page range.
+        Arguments: page_number.
         Return a tuple containing a list of products, current page number, and 
-        total pages"""
+        total pages."""
         file = open("data/products.txt", "r")
         product_list = file.readlines()
         file.close()
@@ -103,9 +108,9 @@ class ProductOperation:
         return (products_returned, page_number, total_page)
 
     def delete_product(self, pro_id):
-        """Deletes the given product
-        Arguments: pro_id
-        Return True/ False to indicate whether deletion was successful"""
+        """Deletes the given product.
+        Arguments: pro_id.
+        Return True/ False to indicate whether deletion was successful."""
         file = open("data/products.txt", "r")
         product_list = file.readlines()
         file.close()
@@ -117,15 +122,13 @@ class ProductOperation:
                 file = open("data/products.txt", "w")
                 file.writelines(product_list)
                 file.close()
-                print("Product deleted.")
                 return True
-        print("Product does not exist!")
         return False
 
     def get_product_list_by_keyword(self, keyword):
-        """Get a list of products that match the given keyword
-        Arguments: keyword
-        Return a list of products"""
+        """Get a list of products that match the given keyword.
+        Arguments: keyword.
+        Return a list of products."""
         file = open("data/products.txt", "r")
         product_list = file.readlines()
         file.close()
@@ -139,9 +142,9 @@ class ProductOperation:
         return new_product_list
 
     def get_product_by_id(self, pro_id):
-        """Get a product that matches the given pro_id
-        Arguments: pro_id
-        Return a product"""
+        """Get a product that matches the given pro_id.
+        Arguments: pro_id.
+        Return a product."""
         file = open("data/products.txt", "r")
         product_list = file.readlines()
         file.close()
@@ -154,9 +157,9 @@ class ProductOperation:
         return None
 
     def generate_category_figure(self):
-        """Generate a bar chart showing the number of products in each 
-        category"""
-        # Get category counts
+        """Generate a bar chart showing the number of products in each. 
+        category."""
+        # Get category counts.
         category_counts = self.products_df["pro_category"].value_counts()
         # Plot bar chart
         category_counts.plot.bar(color="green")
@@ -172,7 +175,7 @@ class ProductOperation:
 
     def generate_discount_figure(self):
         """Generate a pie chart showing the number of products in each 
-        discount range"""
+        discount range."""
         # Get discount counts
         discount_counts = self.products_df["pro_discount"].value_counts(
             bins=[0, 30, 60, 100])
@@ -189,7 +192,7 @@ class ProductOperation:
 
     def generate_likes_count_figure(self):
         """Generate a horizontal bar chart showing the number of likes for each 
-        category"""
+        category."""
 
         # Group by category & calculate the sum of likes for each
         category_likes_sum = self.products_df.groupby(
@@ -214,7 +217,7 @@ class ProductOperation:
 
     def generate_discount_likes_count_figure(self):
         """Generate a scatter chart showing relationship between discount and 
-        likes"""
+        likes."""
         # Create the chart
         plt.tight_layout()
         plt.scatter(self.products_df['pro_discount'],
@@ -228,8 +231,7 @@ class ProductOperation:
         plt.savefig('data/figure/discount_likes_count_figure.png')
 
     def delete_all_products(self):
-        """Deletes all products on file"""
+        """Deletes all products on file."""
         file = open("data/products.txt", "w")
         file.write("")
         file.close()
-        print("All products deleted.")

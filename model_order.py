@@ -15,27 +15,3 @@ class Order:
         """String representation of Order object."""
         return (f"{{'order_id':'{self.order_id}', 'user_id':'{self.user_id}', "
                 f"'pro_id':'{self.pro_id}', 'order_time':'{self.order_time}'}}")
-
-    def get_order_id(self):
-        return self.order_id
-    
-    def get_user_id(self):
-        return self.user_id
-    
-    def get_pro_id(self):
-        return self.pro_id
-    
-    def get_order_time(self):
-        return self.order_time
-    
-    def set_order_id(self, order_id):
-        self.order_id = order_id
-
-    def set_user_id(self, user_id):
-        self.user_id = user_id
-
-    def set_pro_id(self, pro_id):
-        self.pro_id = pro_id
-
-    def set_order_time(self, order_time):
-        self.order_time = order_time

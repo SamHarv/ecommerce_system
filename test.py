@@ -8,6 +8,7 @@ import operation_customer
 import operation_admin
 import operation_product
 import operation_order
+import io_interface
 
 # model_user test
 model_user1 = model_user.User()
@@ -74,7 +75,7 @@ op_admin = operation_admin.AdminOperation()
 # op_admin.register_admin(user_name="_admin_", user_password="xxxx0")
 
 op_product = operation_product.ProductOperation()
-op_product.extract_products_from_files()
+# op_product.extract_products_from_files()
 # print(op_product.get_product_list(7452))
 # op_product.delete_product("1671872")
 # print(op_product.get_product_list_by_keyword("festival"))
@@ -90,4 +91,18 @@ op_order = operation_order.OrderOperation()
 # print(op_order.create_an_order("u_1111111111", "0000000"))
 # op_order.delete_order("0_93152")
 # print(op_order.get_order_list("u_0000000000", 1))
-op_order.generate_test_order_data()
+# op_order.generate_test_order_data()
+# op_order.generate_single_customer_consumption_figure("u_7505871953")
+# op_order.generate_all_customers_consumption_figure()
+# op_order.delete_all_orders()
+
+io = io_interface.IOInterface()
+# print(io.get_user_input("Please enter up to three inputs separated by a "
+# "space:\n", 3))
+# io.main_menu()
+# io.admin_menu()
+# io.customer_menu()
+# io.show_list("admin", "customer", op_cust.get_customer_list(1))
+io.print_error_message("Customer Operation", "username invalid")
+io.print_message("Hello, world!")
+io.print_object(cust_object)
