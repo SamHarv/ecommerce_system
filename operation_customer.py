@@ -56,6 +56,7 @@ class CustomerOperation:
             user_id = self.user_op.generate_unique_user_id()
             user_register_time = time.strftime("%d-%m-%Y_%H:%M:%S")
             # Create new Customer object with validated attributes
+            user_password = self.user_op.encrypt_password(user_password)
             new_customer = Customer(user_id=user_id, user_name=user_name,
                                     user_password=user_password,
                                     user_email=user_email,
@@ -102,6 +103,7 @@ class CustomerOperation:
                         return False
                 elif attribute_name == "user_password":
                     if self.user_op.validate_password(value):
+                        value = self.user_op.encrypt_password(value)
                         user_password = value
                     else:
                         return False
@@ -115,11 +117,6 @@ class CustomerOperation:
                         user_mobile = value
                     else:
                         return False
-                elif attribute_name == "user_role":
-                    if attribute_name == "customer":
-                        user_role = value
-                    elif attribute_name == "admin":
-                        user_role = value
                 else:
                     return False
 
@@ -183,7 +180,7 @@ class CustomerOperation:
             high_customer = len(user_list) - 1
         # Return the customers on the page
         users_returned = user_list[low_customer:high_customer + 1]
-        return (users_returned, page_number, total_page)
+        return (users_returned, f"Page {page_number} of {total_page}")
 
     def delete_all_customers(self):
         """Deletes all customers."""

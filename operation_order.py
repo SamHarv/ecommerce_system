@@ -89,7 +89,7 @@ class OrderOperation:
         # Return a tuple containing a list of orders, current page number, and
         # total pages
         orders_returned = orders[low_order:high_order + 1]
-        return (orders_returned, page_number, total_page)
+        return (orders_returned, f"Page {page_number} of {total_page}")
 
     def generate_test_order_data(self):
         """Randomly generate customers and orders."""
@@ -499,12 +499,13 @@ class OrderOperation:
         month_values = list(month_sums.values())
 
         # Plot the graph
+        # Clear canvas
+        plt.clf()
         plt.tight_layout()
         plt.barh(month_title, month_values, color="cornflowerblue")
         plt.xlabel("Total Order Amount ($)")
         plt.ylabel("Month")
         plt.title("Total Order Amount per Month")
-        plt.tight_layout()
         plt.savefig("data/figure/single_customer_consumption_figure.png")
 
     def generate_all_customers_consumption_figure(self):
@@ -834,6 +835,8 @@ class OrderOperation:
         month_values = list(month_sums.values())
 
         # Plot the graph
+        # Clear canvas
+        plt.clf()
         plt.tight_layout()
         plt.barh(month_title, month_values, color="cornflowerblue")
         plt.xlabel("Total Order Amount ($)")

@@ -6,7 +6,7 @@ class IOInterface:
         Arguments: message, num_of_args.
         Return a list of three strings (args)."""
 
-        user_input = input(message)
+        user_input = input(f"{message}")
         args = user_input.split(" ")
         while len(args) < num_of_args:
             args.append("")
@@ -59,25 +59,60 @@ class IOInterface:
         if user_role == "admin":
             if list_type == "customer":
                 print("\nCustomer List:\n")
-                for customer in object_list:
-                    print(customer)
+                if object_list == []:
+                    return []
+                else:
+                    for customer in object_list:
+                        if type(customer) == list:
+                            for cust in customer:
+                                print(cust)
+                        else:
+                            print(customer)
             elif list_type == "order":
                 print("\nOrder List:\n")
-                for order in object_list:
-                    print(order)
+                if object_list == []:
+                    return []
+                else:
+                    for order in object_list:
+                        if type(order) == list:
+                            for o in order:
+                                print(o)
+                        else:
+                            print(order)
             elif list_type == "product":
                 print("\nProduct List:\n")
-                for product in object_list:
-                    print(product)
+                if object_list == []:
+                    return []
+                else:
+                    for product in object_list:
+                        if type(product) == list:
+                            for pro in product:
+                                print(pro)
+                        else:
+                            print(product)
         elif user_role == "customer":
             if list_type == "order":
                 print("\nOrder History:\n")
-                for order in object_list:
-                    print(order)
+                if object_list == []:
+                    return []
+                else:
+                    for order in object_list:
+                        if type(order) == list:
+                            for o in order:
+                                print(o)
+                        else:
+                            print(order)
             elif list_type == "product":
                 print("\nProduct List:\n")
-                for product in object_list:
-                    print(product)
+                if object_list == []:
+                    return []
+                else:
+                    for product in object_list:
+                        if type(product) == list:
+                            for pro in product:
+                                print(pro)
+                        else:
+                            print(product)
 
     def print_error_message(self, error_source, error_message):
         """Print error message to show where error has occurred.

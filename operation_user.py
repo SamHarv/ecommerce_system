@@ -111,26 +111,28 @@ class UserOperation:
         file.close()
         for user in user_list:
             # Remove curly braces from user string
-            user.replace("{", "").replace("}", "")
+            user = user.replace("{", "").replace("}", "")
             if (f"'user_name':'{user_name}'" in user
                     and f"'user_password':'{user_password}'" in user):
                 # Save the user_id, name, password, register_time, user_role
+                print(user)
                 param_list = user.split(",")
                 user_id = param_list[0].split(":")[1].replace("'", "")
                 name = param_list[1].split(":")[1].replace("'", "")
                 password = param_list[2].split(":")[1].replace("'", "")
-                register_time = param_list[5].split(":", 1)[1].replace("'", "")
-                user_role = param_list[6].split(":")[1].replace("'", "")
+                password = self.decrypt_password(password)
+                register_time = param_list[3].split(":", 1)[1].replace("'", "")
+                user_role = param_list[4].split(":")[1].replace("'", "")
                 # Remove remaining curly brace and new line character
                 user_role = user_role.replace("}", "").replace("\n", "")
                 # Check if user is admin or customer
-                if f"'user_role':'admin'" in user:
+                if user_role == "admin":
                     return Admin(user_id, name, password, register_time,
                                  user_role)
-                elif f"'user_role':'customer'" in user:
+                elif user_role == "customer":
                     # Save mobile and email
-                    email = param_list[3].split(":")[1].replace("'", "")
-                    mobile = param_list[4].split(":")[1].replace("'", "")
+                    email = param_list[5].split(":")[1].replace("'", "")
+                    mobile = param_list[6].split(":")[1].replace("'", "")
                     return Customer(user_id, name, password, email, mobile,
                                     register_time, user_role)
         return "User not found, please register!"

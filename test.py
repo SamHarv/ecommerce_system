@@ -9,6 +9,7 @@ import operation_admin
 import operation_product
 import operation_order
 import io_interface
+import main
 
 # model_user test
 model_user1 = model_user.User()
@@ -76,7 +77,7 @@ op_admin = operation_admin.AdminOperation()
 
 op_product = operation_product.ProductOperation()
 # op_product.extract_products_from_files()
-# print(op_product.get_product_list(7452))
+# print(op_product.get_product_list(1))
 # op_product.delete_product("1671872")
 # print(op_product.get_product_list_by_keyword("festival"))
 # print(op_product.get_product_by_id("1674377"))
@@ -103,6 +104,8 @@ io = io_interface.IOInterface()
 # io.admin_menu()
 # io.customer_menu()
 # io.show_list("admin", "customer", op_cust.get_customer_list(1))
-io.print_error_message("Customer Operation", "username invalid")
-io.print_message("Hello, world!")
-io.print_object(cust_object)
+# io.print_error_message("Customer Operation", "username invalid")
+# io.print_message("Hello, world!")
+# io.print_object(cust_object)
+
+# main.main()

@@ -1,7 +1,7 @@
 
 Overall: 
+- Add to GitHub
+- Any new issues are likely related to password encrypyion/ decryption
 - Add exception handling
-- Periods at end of docstrings
-- Remove prints outside of IO class
 - Testing procedure?
-- Ensure all code is being used
+- User manual

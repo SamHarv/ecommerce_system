@@ -105,7 +105,7 @@ class ProductOperation:
             high_product = len(product_list) - 1
         # Return the products on the page
         products_returned = product_list[low_product:high_product + 1]
-        return (products_returned, page_number, total_page)
+        return (products_returned, f"Page {page_number} of {total_page}")
 
     def delete_product(self, pro_id):
         """Deletes the given product.
@@ -139,7 +139,10 @@ class ProductOperation:
                 new_product_list.append(product)
             else:
                 continue
-        return new_product_list
+        if new_product_list == []:
+            return []
+        else:
+            return new_product_list
 
     def get_product_by_id(self, pro_id):
         """Get a product that matches the given pro_id.
@@ -159,8 +162,12 @@ class ProductOperation:
     def generate_category_figure(self):
         """Generate a bar chart showing the number of products in each. 
         category."""
+        # Clear canvas
+        plt.clf()
         # Get category counts.
         category_counts = self.products_df["pro_category"].value_counts()
+        # Ensure full chart is shown
+        plt.tight_layout()
         # Plot bar chart
         category_counts.plot.bar(color="green")
         plt.xlabel("Category")
@@ -168,31 +175,34 @@ class ProductOperation:
         plt.xticks(rotation=22)
         plt.ylabel("Number of Products")
         plt.title("Number of Products in Each Category")
-        # Ensure full chart is shown
-        plt.tight_layout()
         # Save figure
         plt.savefig("./data/figure/category_figure.png")
 
     def generate_discount_figure(self):
         """Generate a pie chart showing the number of products in each 
         discount range."""
+        # Clear canvas
+        plt.clf()
         # Get discount counts
         discount_counts = self.products_df["pro_discount"].value_counts(
             bins=[0, 30, 60, 100])
+        # Ensure full chart is shown
+        plt.tight_layout()
         # Plot pie chart
         discount_counts.plot.pie(autopct="%.2f%%",
                                  colors=["blue", "green", "red"],
                                  labels=["30-60%", "60-100%", "0-30%"])
         plt.ylabel("")
         plt.title("Number of Products in Each Discount Range")
-        # Ensure full chart is shown
-        plt.tight_layout()
         # Save figure
         plt.savefig("./data/figure/discount_figure.png")
 
     def generate_likes_count_figure(self):
         """Generate a horizontal bar chart showing the number of likes for each 
         category."""
+
+        # Clear canvas
+        plt.clf()
 
         # Group by category & calculate the sum of likes for each
         category_likes_sum = self.products_df.groupby(
@@ -218,6 +228,10 @@ class ProductOperation:
     def generate_discount_likes_count_figure(self):
         """Generate a scatter chart showing relationship between discount and 
         likes."""
+
+        # Clear canvas
+        plt.clf()
+        
         # Create the chart
         plt.tight_layout()
         plt.scatter(self.products_df['pro_discount'],

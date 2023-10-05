@@ -22,6 +22,8 @@ class AdminOperation:
             return False
         admin_id = self.user_op.generate_unique_user_id()
         admin_register_time = time.strftime("%d-%m-%Y_%H:%M:%S")
+        # Encrypt password
+        user_password = self.user_op.encrypt_password(user_password)
         # create admin object
         admin = Admin(user_id=admin_id, user_name=user_name,
                       user_password=user_password,
