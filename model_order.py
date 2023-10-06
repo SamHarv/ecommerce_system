@@ -14,4 +14,5 @@ class Order:
     def __str__(self):
         """String representation of Order object."""
         return (f"{{'order_id':'{self.order_id}', 'user_id':'{self.user_id}', "
-                f"'pro_id':'{self.pro_id}', 'order_time':'{self.order_time}'}}")
+                f"'pro_id':'{self.pro_id}', "
+                f"'order_time':'{self.order_time}'}}")

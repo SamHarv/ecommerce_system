@@ -1,4 +1,3 @@
-import datetime
 import math
 import random
 import string
@@ -22,9 +21,16 @@ class OrderOperation:
         Return order_id."""
         while True:
             order_id = "0_" + str(random.randint(10000, 99999))
-            file = open("data/orders.txt", "r")
-            data_string = file.read()
-            file.close()
+            try:
+                file = open("data/orders.txt", "r", encoding="utf-8")
+                data_string = file.read()
+            except FileNotFoundError:
+                file = open("data/orders.txt", "w", encoding="utf-8")
+                data_string = ""
+            except Exception as e:
+                return e
+            finally:
+                file.close()
             # Check if user_id exists in users.txt
             if order_id not in data_string:
                 break
@@ -35,31 +41,54 @@ class OrderOperation:
         """Creates an order.
         Arguments: customer_id, product_id, create_time.
         Return True/ False to indicate whether creation was successful."""
-        order_id = self.generate_unique_order_id()
+        try:
+            order_id = self.generate_unique_order_id()
+        except Exception as e:
+            return False
         # create order object
         order = Order(order_id=order_id, user_id=customer_id,
                       pro_id=product_id, order_time=create_time)
         # write to file
-        file = open("data/orders.txt", "a")
-        file.write(str(order) + "\n")
-        file.close()
+        try:
+            file = open("data/orders.txt", "a", encoding="utf-8")
+            file.write(str(order) + "\n")
+        except FileNotFoundError:
+            file = open("data/orders.txt", "w", encoding="utf-8")
+            file.write(str(order) + "\n")
+        except Exception as e:
+            return False
+        finally:
+            file.close()
         return True
-        # return False on exception
 
     def delete_order(self, order_id):
         """Deletes an order.
         Arguments: order_id.
         Return True/ False to indicate whether deletion was successful."""
-        file = open("data/orders.txt", "r")
-        order_list = file.readlines()
-        file.close()
+        try:
+            file = open("data/orders.txt", "r", encoding="utf-8")
+            order_list = file.readlines()
+        except FileNotFoundError:
+            file = open("data/orders.txt", "w", encoding="utf-8")
+            order_list = []
+        except Exception as e:
+            return False
+        finally:
+            file.close()
         for order in order_list:
             # Check if order exists
             if "'order_id':'" + str(order_id) in order:
                 order_list.remove(order)
-                file = open("data/orders.txt", "w")
-                file.writelines(order_list)
-                file.close()
+                try:
+                    file = open("data/orders.txt", "w", encoding="utf-8")
+                    file.writelines(order_list)
+                except FileNotFoundError:
+                    file = open("data/orders.txt", "w", encoding="utf-8")
+                    file.writelines(order_list)
+                except Exception as e:
+                    return False
+                finally:
+                    file.close()
                 return True
         return False
 
@@ -68,9 +97,16 @@ class OrderOperation:
         Arguments: customer_id, page_number.
         Return tuple with a list of order objects, the page number, and the 
         total number of pages."""
-        file = open("data/orders.txt", "r")
-        order_list = file.readlines()
-        file.close()
+        try:
+            file = open("data/orders.txt", "r", encoding="utf-8")
+            order_list = file.readlines()
+        except FileNotFoundError:
+            file = open("data/orders.txt", "w", encoding="utf-8")
+            order_list = []
+        except Exception as e:
+            return e
+        finally:
+            file.close()
         orders = []
         for order in order_list:
             if customer_id == "all":
@@ -78,7 +114,10 @@ class OrderOperation:
             elif "'user_id':'" + str(customer_id) in order:
                 orders.append(order)
         # Calculate total number of pages
-        total_page = math.ceil(len(orders) / 10)
+        try:
+            total_page = math.ceil(len(orders) / 10)
+        except Exception as e:
+            return e
         # First order on page
         low_order = (page_number * 10) - 10
         # Last order on page
@@ -131,15 +170,29 @@ class OrderOperation:
             self.op_customer.register_customer(user_name, user_password,
                                                user_email, user_mobile)
 
-            # Read users into list
-            file = open("data/users.txt", "r")
-            user_list = file.readlines()
-            file.close()
+            # Read users in list
+            try:
+                file = open("data/users.txt", "r", encoding="utf-8")
+                user_list = file.readlines()
+            except FileNotFoundError:
+                file = open("data/users.txt", "w", encoding="utf-8")
+                user_list = []
+            except Exception as e:
+                return e
+            finally:
+                file.close()
 
-            # Read products into list
-            file = open("data/products.txt", "r")
-            product_list = file.readlines()
-            file.close()
+            # Read products in list
+            try:
+                file = open("data/products.txt", "r", encoding="utf-8")
+                product_list = file.readlines()
+            except FileNotFoundError:
+                file = open("data/products.txt", "w", encoding="utf-8")
+                product_list = []
+            except Exception as e:
+                return e
+            finally:
+                file.close()
 
             # Create 50-200 random orders for each customer
             for i in range(random.randint(50, 200)):
@@ -176,9 +229,16 @@ class OrderOperation:
         Attributes: customer_id."""
 
         # Get orders associated with customer from orders.txt with customer_id
-        file = open("data/orders.txt", "r")
-        order_list = file.readlines()
-        file.close()
+        try:
+            file = open("data/orders.txt", "r", encoding="utf-8")
+            order_list = file.readlines()
+        except FileNotFoundError:
+            file = open("data/orders.txt", "w", encoding="utf-8")
+            order_list = []
+        except Exception as e:
+            return e
+        finally:
+            file.close()
         customer_orders = []
         for order in order_list:
             if "'user_id':'" + str(customer_id) in order:
@@ -231,9 +291,16 @@ class OrderOperation:
             elif month == 12:
                 dec_orders.append(order)
 
-        file = open("data/products.txt", "r")
-        product_list = file.readlines()
-        file.close()
+        try:
+            file = open("data/products.txt", "r", encoding="utf-8")
+            product_list = file.readlines()
+        except FileNotFoundError:
+            file = open("data/products.txt", "w", encoding="utf-8")
+            product_list = []
+        except Exception as e:
+            return e
+        finally:
+            file.close()
 
         # Get January sum of orders
         jan_pro_id_list = []
@@ -506,16 +573,26 @@ class OrderOperation:
         plt.xlabel("Total Order Amount ($)")
         plt.ylabel("Month")
         plt.title("Total Order Amount per Month")
-        plt.savefig("data/figure/single_customer_consumption_figure.png")
+        try:
+            plt.savefig("data/figure/single_customer_consumption_figure.png")
+        except Exception as e:
+            return e
 
     def generate_all_customers_consumption_figure(self):
         """Generate chart showing total consumption per month for all 
         customers."""
 
         # Get orders from orders.txt
-        file = open("data/orders.txt", "r")
-        order_list = file.readlines()
-        file.close()
+        try:
+            file = open("data/orders.txt", "r", encoding="utf-8")
+            order_list = file.readlines()
+        except FileNotFoundError:
+            file = open("data/orders.txt", "w", encoding="utf-8")
+            order_list = []
+        except Exception as e:
+            return e
+        finally:
+            file.close()
         all_orders = []
         for order in order_list:
             trimmed_order = order.replace(
@@ -843,11 +920,21 @@ class OrderOperation:
         plt.ylabel("Month")
         plt.title("Total Order Amount per Month")
         plt.tight_layout()
-        plt.savefig("data/figure/all_customers_consumption_figure.png")
+        try:
+            plt.savefig("data/figure/all_customers_consumption_figure.png")
+        except Exception as e:
+            return e
 
     def delete_all_orders(self):
         """Delete all orders from orders.txt."""
 
-        file = open("data/orders.txt", "w")
-        file.write("")
-        file.close()
+        try:
+            file = open("data/orders.txt", "w", encoding="utf-8")
+            file.write("")
+        except FileNotFoundError:
+            file = open("data/orders.txt", "x", encoding="utf-8")
+            file.write("")
+        except Exception as e:
+            return e
+        finally:
+            file.close()

@@ -5,8 +5,13 @@ class IOInterface:
         """Receive user input.
         Arguments: message, num_of_args.
         Return a list of three strings (args)."""
+        try:
+            user_input = input(f"{message}")
+        except ValueError:
+            return ValueError
+        except Exception:
+            return Exception
 
-        user_input = input(f"{message}")
         args = user_input.split(" ")
         while len(args) < num_of_args:
             args.append("")
@@ -47,7 +52,8 @@ class IOInterface:
               "2. Update Profile\n"
               "3. Show Products (if you would like to enter a particular "
               "search keyword, please enter 3 followed by a space, then your "
-              "keyword)\n"
+              "keyword. If you try to input more than one word, only the"
+              "first will be accepted)\n"
               "4. Show Order History\n"
               "5. Generate All Consumption Figures\n"
               "6. Logout\n")

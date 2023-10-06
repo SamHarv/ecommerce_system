@@ -1,7 +1,5 @@
 
 Overall: 
-- Add to GitHub
-- Any new issues are likely related to password encrypyion/ decryption
-- Add exception handling
-- Testing procedure?
+- Push to GitHub
 - User manual
+- Delete todo file

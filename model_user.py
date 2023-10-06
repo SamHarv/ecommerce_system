@@ -4,7 +4,8 @@ class User:
     """User class is the base for Customer and Admin classes."""
 
     def __init__(self, user_id="u_0000000000", user_name="default_user",
-                 user_password="a0000", user_register_time="00-00-0000_00:00:00",
+                 user_password="a0000",
+                 user_register_time="00-00-0000_00:00:00",
                  user_role="customer"):
         """Constructor for User class."""
         self.user_id = user_id

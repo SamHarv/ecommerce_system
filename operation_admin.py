@@ -30,7 +30,14 @@ class AdminOperation:
                       user_register_time=admin_register_time,
                       user_role="admin")
         # write to file
-        file = open("data/users.txt", "a")
-        file.write(str(admin) + "\n")
-        file.close()
+        try:
+            file = open("data/users.txt", "a", encoding="utf-8")
+            file.write(str(admin) + "\n")
+        except FileNotFoundError:
+            file = open("data/users.txt", "w", encoding="utf-8")
+            file.write(str(admin) + "\n")
+        except Exception as e:
+            return False
+        finally:
+            file.close()
         return True

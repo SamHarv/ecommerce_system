@@ -64,18 +64,33 @@ class CustomerOperation:
                                     user_register_time=user_register_time,
                                     user_role="customer")
             # Write new customer to users.txt
-            user_file = open("data/users.txt", "a")
-            user_file.write(str(new_customer) + "\n")
-            user_file.close()
+            try:
+                user_file = open("data/users.txt", "a", encoding="utf-8")
+                user_file.write(str(new_customer) + "\n")
+            except FileNotFoundError:
+                user_file = open("data/users.txt", "w", encoding="utf-8")
+                user_file.write(str(new_customer) + "\n")
+            except Exception:
+                return False
+            finally:
+                user_file.close()
             return True
 
     def update_profile(self, attribute_name, value, customer_object):
         """Updates the customer profile.
         Arguments: attribute_name, value, customer_object.
         Return True/ False to indicate whether update was successful."""
-        file = open("data/users.txt", "r+")
-        user_list = file.readlines()
-        file.close()
+        try:
+            file = open("data/users.txt", "r", encoding="utf-8")
+            user_list = file.readlines()
+        except FileNotFoundError:
+            file = open("data/users.txt", "w", encoding="utf-8")
+            user_list = []
+            return False
+        except Exception:
+            return False
+        finally:
+            file.close()
         for user in user_list:
             # Check if customer exists
             if "'user_id':'" + str(customer_object.user_id) in user:
@@ -122,39 +137,73 @@ class CustomerOperation:
 
         # Remove the customer for replacement
         user_list.remove(user)
-        file = open("data/users.txt", "w")
-        file.writelines(user_list)
-        file.close()
+        try:
+            file = open("data/users.txt", "w", encoding="utf-8")
+            file.writelines(user_list)
+        except FileNotFoundError:
+            file = open("data/users.txt", "w", encoding="utf-8")
+            file.writelines(user_list)
+        except Exception:
+            return False
+        finally:
+            file.close()
 
         # Create new Customer object with updated attributes
-        updated_customer = Customer(user_id=user_id,
-                                    user_name=user_name,
-                                    user_password=user_password,
-                                    user_email=user_email,
-                                    user_mobile=user_mobile,
-                                    user_register_time=register_time,
-                                    user_role=user_role)
+        try:
+            updated_customer = Customer(user_id=user_id,
+                                        user_name=user_name,
+                                        user_password=user_password,
+                                        user_email=user_email,
+                                        user_mobile=user_mobile,
+                                        user_register_time=register_time,
+                                        user_role=user_role)
+        except Exception:
+            return False
         # Write updated customer to users.txt
-        file = open("data/users.txt", "a")
-        file.write(str(updated_customer) + "\n")
-        file.close()
+        try:
+            file = open("data/users.txt", "a", encoding="utf-8")
+            file.write(str(updated_customer) + "\n")
+        except FileNotFoundError:
+            file = open("data/users.txt", "w", encoding="utf-8")
+            file.write(str(updated_customer) + "\n")
+        except Exception:
+            return False
+        finally:
+            file.close()
         return True
 
     def delete_customer(self, customer_id):
         """Deletes the given customer.
         Arguments: customer_id.
         Return True/ False to indicate whether deletion was successful."""
-        file = open("data/users.txt", "r")
-        user_list = file.readlines()
-        file.close()
+        try:
+            file = open("data/users.txt", "r", encoding="utf-8")
+            user_list = file.readlines()
+        except FileNotFoundError:
+            file = open("data/users.txt", "w", encoding="utf-8")
+            user_list = []
+            return False
+        except Exception:
+            return False
+        finally:
+            file.close()
         for user in user_list:
             # Check if customer exists
-            if str(customer_id) in user:
+            if (str(customer_id) in user and str(customer_id)[:2] == "u_"
+                and str(customer_id)[2:].isdigit()
+                    and len(str(customer_id)) == 12):
                 user_list.remove(user)
                 # Rewrite the file with the updated list
-                file = open("data/users.txt", "w")
-                file.writelines(user_list)
-                file.close()
+                try:
+                    file = open("data/users.txt", "w", encoding="utf-8")
+                    file.writelines(user_list)
+                except FileNotFoundError:
+                    file = open("data/users.txt", "x", encoding="utf-8")
+                    file.writelines(user_list)
+                except Exception:
+                    return False
+                finally:
+                    file.close()
                 return True
         return False
 
@@ -163,14 +212,24 @@ class CustomerOperation:
         Arguments: page_number.
         Return a tuple containing a list of customers, current page number, 
         and total pages."""
-        file = open("data/users.txt", "r")
-        user_list = file.readlines()
-        file.close()
+        try:
+            file = open("data/users.txt", "r", encoding="utf-8")
+            user_list = file.readlines()
+        except FileNotFoundError:
+            file = open("data/users.txt", "w", encoding="utf-8")
+            user_list = []
+        except Exception:
+            return Exception
+        finally:
+            file.close()
         # Remove admins from list
         for user in user_list:
             if "'user_role':'customer'" not in user:
                 user_list.remove(user)
-        total_page = math.ceil(len(user_list) / 10)
+        try:
+            total_page = math.ceil(len(user_list) / 10)
+        except Exception:
+            return Exception
         # First customer on page
         low_customer = (page_number * 10) - 10
         # Last customer on page
@@ -184,9 +243,16 @@ class CustomerOperation:
 
     def delete_all_customers(self):
         """Deletes all customers."""
-        file = open("data/users.txt", "r")
-        user_list = file.readlines()
-        file.close()
+        try:
+            file = open("data/users.txt", "r", encoding="utf-8")
+            user_list = file.readlines()
+        except FileNotFoundError:
+            file = open("data/users.txt", "w", encoding="utf-8")
+            user_list = []
+        except Exception:
+            return Exception
+        finally:
+            file.close()
 
         # Remove all customers from list
         new_user_list = []
@@ -197,6 +263,13 @@ class CustomerOperation:
                 continue
 
         # Rewrite the file with the updated list
-        file = open("data/users.txt", "w")
-        file.writelines(new_user_list)
-        file.close()
+        try:
+            file = open("data/users.txt", "w", encoding="utf-8")
+            file.writelines(new_user_list)
+        except FileNotFoundError:
+            file = open("data/users.txt", "x", encoding="utf-8")
+            file.writelines(new_user_list)
+        except Exception:
+            return Exception
+        finally:
+            file.close()

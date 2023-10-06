@@ -12,15 +12,18 @@ class ProductOperation:
         """Extracts products from csv files and writes to txt file."""
 
         # Read csv files
-        accessories_df = pd.read_csv("./data/product/accessories.csv")
-        bags_df = pd.read_csv("./data/product/bags.csv")
-        beauty_df = pd.read_csv("./data/product/beauty.csv")
-        house_df = pd.read_csv("./data/product/house.csv")
-        jewelry_df = pd.read_csv("./data/product/jewelry.csv")
-        kids_df = pd.read_csv("./data/product/kids.csv")
-        men_df = pd.read_csv("./data/product/men.csv")
-        shoes_df = pd.read_csv("./data/product/shoes.csv")
-        women_df = pd.read_csv("./data/product/women.csv")
+        try:
+            accessories_df = pd.read_csv("data/product/accessories.csv")
+            bags_df = pd.read_csv("data/product/bags.csv")
+            beauty_df = pd.read_csv("data/product/beauty.csv")
+            house_df = pd.read_csv("data/product/house.csv")
+            jewelry_df = pd.read_csv("data/product/jewelry.csv")
+            kids_df = pd.read_csv("data/product/kids.csv")
+            men_df = pd.read_csv("data/product/men.csv")
+            shoes_df = pd.read_csv("data/product/shoes.csv")
+            women_df = pd.read_csv("data/product/women.csv")
+        except Exception as e:
+            return e
         # Merge dataframes
         df1 = pd.merge(accessories_df, bags_df, how="outer")
         df2 = pd.merge(df1, beauty_df, how="outer")
@@ -37,23 +40,29 @@ class ProductOperation:
                            "variation_1_color", "variation_0_thumbnail",
                            "variation_0_image", "variation_1_thumbnail",
                            "variation_1_image", "image_url", "url", "currency"]
-        self.products_df = self.products_df.drop(columns=columns_to_drop)
+        try:
+            self.products_df = self.products_df.drop(columns=columns_to_drop)
+        except KeyError:
+            return KeyError
+        except Exception as e:
+            return e
 
         # Remove duplicates & reset index
         self.products_df = self.products_df.drop_duplicates()
         self.products_df = self.products_df.reset_index(drop=True)
 
         # Rename columns
-        self.products_df = self.products_df.rename(columns={"id": "pro_id",
-                                                            "model": "pro_model",
-                                                            "category": "pro_category",
-                                                            "name": "pro_name",
-                                                            "current_price":
-                                                            "pro_current_price",
-                                                            "raw_price": "pro_raw_price",
-                                                            "discount": "pro_discount",
-                                                            "likes_count":
-                                                            "pro_likes_count"})
+        self.products_df = self.products_df.rename(
+            columns={"id": "pro_id",
+                     "model": "pro_model",
+                     "category": "pro_category",
+                     "name": "pro_name",
+                     "current_price":
+                     "pro_current_price",
+                     "raw_price": "pro_raw_price",
+                     "discount": "pro_discount",
+                     "likes_count":
+                     "pro_likes_count"})
 
         for product in self.products_df.index:
             # if name contains commas, remove the row from dataframe
@@ -82,20 +91,37 @@ class ProductOperation:
                                  f"'}}\n")
 
         # Write to products.txt
-        file = open("data/products.txt", "w")
-        file.writelines(products_list)
-        file.close()
+        try:
+            file = open("data/products.txt", "w", encoding="utf-8")
+            file.writelines(products_list)
+        except FileNotFoundError:
+            file = open("data/products.txt", "x", encoding="utf-8")
+            file.writelines(products_list)
+        except Exception as e:
+            return e
+        finally:
+            file.close()
 
     def get_product_list(self, page_number):
         """Get a list of products within a given page range.
         Arguments: page_number.
         Return a tuple containing a list of products, current page number, and 
         total pages."""
-        file = open("data/products.txt", "r")
-        product_list = file.readlines()
-        file.close()
+        try:
+            file = open("data/products.txt", "r", encoding="utf-8")
+            product_list = file.readlines()
+        except FileNotFoundError:
+            file = open("data/products.txt", "w", encoding="utf-8")
+            product_list = []
+        except Exception as e:
+            return e
+        finally:
+            file.close()
         # Calculate total pages
-        total_page = math.ceil(len(product_list) / 10)
+        try:
+            total_page = math.ceil(len(product_list) / 10)
+        except Exception as e:
+            return e
         # First product on page
         low_product = (page_number * 10) - 10
         # Last product on page
@@ -111,15 +137,22 @@ class ProductOperation:
         """Deletes the given product.
         Arguments: pro_id.
         Return True/ False to indicate whether deletion was successful."""
-        file = open("data/products.txt", "r")
-        product_list = file.readlines()
-        file.close()
+        try:
+            file = open("data/products.txt", "r", encoding="utf-8")
+            product_list = file.readlines()
+        except FileNotFoundError:
+            file = open("data/products.txt", "w", encoding="utf-8")
+            product_list = []
+        except Exception as e:
+            return e
+        finally:
+            file.close()
         for product in product_list:
             # Check if product exists
             if str(pro_id) in product:
                 product_list.remove(product)
                 # Rewrite the file with the updated list
-                file = open("data/products.txt", "w")
+                file = open("data/products.txt", "w", encoding="utf-8")
                 file.writelines(product_list)
                 file.close()
                 return True
@@ -129,9 +162,14 @@ class ProductOperation:
         """Get a list of products that match the given keyword.
         Arguments: keyword.
         Return a list of products."""
-        file = open("data/products.txt", "r")
-        product_list = file.readlines()
-        file.close()
+        try:
+            file = open("data/products.txt", "r", encoding="utf-8")
+            product_list = file.readlines()
+        except FileNotFoundError:
+            file = open("data/products.txt", "w", encoding="utf-8")
+            product_list = []
+        finally:
+            file.close()
         # Remove products that do not match keyword
         new_product_list = []
         for product in product_list:
@@ -148,16 +186,22 @@ class ProductOperation:
         """Get a product that matches the given pro_id.
         Arguments: pro_id.
         Return a product."""
-        file = open("data/products.txt", "r")
-        product_list = file.readlines()
-        file.close()
+        try:
+            file = open("data/products.txt", "r", encoding="utf-8")
+            product_list = file.readlines()
+        except FileNotFoundError:
+            file = open("data/products.txt", "w", encoding="utf-8")
+            product_list = []
+        finally:
+            file.close()
         # Remove products that do not match pro_id
         for product in product_list:
             if str(pro_id) in product:
-                return product
+                if str(pro_id).isdigit() and len(str(pro_id)) == 7:
+                    return product
             else:
                 continue
-        return None
+        return []
 
     def generate_category_figure(self):
         """Generate a bar chart showing the number of products in each. 
@@ -165,7 +209,12 @@ class ProductOperation:
         # Clear canvas
         plt.clf()
         # Get category counts.
-        category_counts = self.products_df["pro_category"].value_counts()
+        try:
+            category_counts = self.products_df["pro_category"].value_counts()
+        except KeyError:
+            return KeyError
+        except Exception as e:
+            return e
         # Ensure full chart is shown
         plt.tight_layout()
         # Plot bar chart
@@ -176,7 +225,10 @@ class ProductOperation:
         plt.ylabel("Number of Products")
         plt.title("Number of Products in Each Category")
         # Save figure
-        plt.savefig("./data/figure/category_figure.png")
+        try:
+            plt.savefig("data/figure/category_figure.png")
+        except Exception as e:
+            return e
 
     def generate_discount_figure(self):
         """Generate a pie chart showing the number of products in each 
@@ -184,8 +236,13 @@ class ProductOperation:
         # Clear canvas
         plt.clf()
         # Get discount counts
-        discount_counts = self.products_df["pro_discount"].value_counts(
-            bins=[0, 30, 60, 100])
+        try:
+            discount_counts = self.products_df["pro_discount"].value_counts(
+                bins=[0, 30, 60, 100])
+        except KeyError:
+            return KeyError
+        except Exception as e:
+            return e
         # Ensure full chart is shown
         plt.tight_layout()
         # Plot pie chart
@@ -195,7 +252,10 @@ class ProductOperation:
         plt.ylabel("")
         plt.title("Number of Products in Each Discount Range")
         # Save figure
-        plt.savefig("./data/figure/discount_figure.png")
+        try:
+            plt.savefig("data/figure/discount_figure.png")
+        except Exception as e:
+            return e
 
     def generate_likes_count_figure(self):
         """Generate a horizontal bar chart showing the number of likes for each 
@@ -205,12 +265,17 @@ class ProductOperation:
         plt.clf()
 
         # Group by category & calculate the sum of likes for each
-        category_likes_sum = self.products_df.groupby(
-            'pro_category')['pro_likes_count'].sum().reset_index()
+        try:
+            category_likes_sum = self.products_df.groupby(
+                'pro_category')['pro_likes_count'].sum().reset_index()
 
-        # Sort in ascending order by the sum of likes
-        category_likes_sum_sorted = category_likes_sum.sort_values(
-            by='pro_likes_count')
+            # Sort in ascending order by the sum of likes
+            category_likes_sum_sorted = category_likes_sum.sort_values(
+                by='pro_likes_count')
+        except KeyError:
+            return KeyError
+        except Exception as e:
+            return e
 
         # Create the chart
         plt.tight_layout()
@@ -223,7 +288,10 @@ class ProductOperation:
         plt.title('Count of Likes by Category')
 
         # Save the figure to the "data/figure" folder
-        plt.savefig('data/figure/likes_count_figure.png')
+        try:
+            plt.savefig('data/figure/likes_count_figure.png')
+        except Exception as e:
+            return e
 
     def generate_discount_likes_count_figure(self):
         """Generate a scatter chart showing relationship between discount and 
@@ -231,7 +299,7 @@ class ProductOperation:
 
         # Clear canvas
         plt.clf()
-        
+
         # Create the chart
         plt.tight_layout()
         plt.scatter(self.products_df['pro_discount'],
@@ -242,10 +310,20 @@ class ProductOperation:
         plt.title('Relationship between Discount and Likes')
 
         # Save the figure to the "data/figure" folder
-        plt.savefig('data/figure/discount_likes_count_figure.png')
+        try:
+            plt.savefig('data/figure/discount_likes_count_figure.png')
+        except Exception as e:
+            return e
 
     def delete_all_products(self):
         """Deletes all products on file."""
-        file = open("data/products.txt", "w")
-        file.write("")
-        file.close()
+        try:
+            file = open("data/products.txt", "w", encoding="utf-8")
+            file.write("")
+        except FileNotFoundError:
+            file = open("data/products.txt", "x", encoding="utf-8")
+            file.write("")
+        except Exception as e:
+            return e
+        finally:
+            file.close()

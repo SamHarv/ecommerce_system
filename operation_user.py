@@ -14,9 +14,14 @@ class UserOperation:
         Return user_id"""
         while True:
             user_id = "u_" + str(random.randint(1000000000, 9999999999))
-            file = open("data/users.txt", "r")
-            data_string = file.read()
-            file.close()
+            try:
+                file = open("data/users.txt", "r", encoding="utf-8")
+                data_string = file.read()
+            except FileNotFoundError:
+                file = open("data/users.txt", "w", encoding="utf-8")
+                data_string = ""
+            finally:
+                file.close()
             # Check if user_id exists in users.txt
             if user_id not in data_string:
                 break
@@ -68,9 +73,16 @@ class UserOperation:
         Arguments: user_name.
         Return True/ False."""
         # Check whether user_name in users.txt
-        file = open("data/users.txt", "r")
-        user_list = file.readlines()
-        file.close()
+        try:
+            file = open("data/users.txt", "r", encoding="utf-8")
+            user_list = file.readlines()
+        except FileNotFoundError:
+            file = open("data/users.txt", "w", encoding="utf-8")
+            user_list = []
+        except Exception:
+            return False
+        finally:
+            file.close()
         for user in user_list:
             if f"'user_name':'{user_name}'" in user:
                 return True
@@ -106,16 +118,22 @@ class UserOperation:
         """Logs in the user.
         Arguments: user_name, user_password.
         Return Customer/ Admin object depending on authorisation."""
-        file = open("data/users.txt", "r")
-        user_list = file.readlines()
-        file.close()
+        try:
+            file = open("data/users.txt", "r", encoding="utf-8")
+            user_list = file.readlines()
+        except FileNotFoundError:
+            file = open("data/users.txt", "w", encoding="utf-8")
+            user_list = []
+            return "No users found, please register!"
+        except Exception as e:
+            return "No users found, please register!"
+        finally:
+            file.close()
         for user in user_list:
             # Remove curly braces from user string
             user = user.replace("{", "").replace("}", "")
-            if (f"'user_name':'{user_name}'" in user
-                    and f"'user_password':'{user_password}'" in user):
+            if (f"'user_name':'{user_name}'" in user):
                 # Save the user_id, name, password, register_time, user_role
-                print(user)
                 param_list = user.split(",")
                 user_id = param_list[0].split(":")[1].replace("'", "")
                 name = param_list[1].split(":")[1].replace("'", "")
@@ -125,14 +143,18 @@ class UserOperation:
                 user_role = param_list[4].split(":")[1].replace("'", "")
                 # Remove remaining curly brace and new line character
                 user_role = user_role.replace("}", "").replace("\n", "")
-                # Check if user is admin or customer
-                if user_role == "admin":
-                    return Admin(user_id, name, password, register_time,
-                                 user_role)
-                elif user_role == "customer":
-                    # Save mobile and email
-                    email = param_list[5].split(":")[1].replace("'", "")
-                    mobile = param_list[6].split(":")[1].replace("'", "")
-                    return Customer(user_id, name, password, email, mobile,
-                                    register_time, user_role)
+                # Check password
+                if user_password != password:
+                    return "Incorrect password!"
+                else:
+                    # Check if user is admin or customer
+                    if user_role == "admin":
+                        return Admin(user_id, name, password, register_time,
+                                     user_role)
+                    elif user_role == "customer":
+                        # Save mobile and email
+                        email = param_list[5].split(":")[1].replace("'", "")
+                        mobile = param_list[6].split(":")[1].replace("'", "")
+                        return Customer(user_id, name, password, email, mobile,
+                                        register_time, user_role)
         return "User not found, please register!"
