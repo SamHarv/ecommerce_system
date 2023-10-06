@@ -1,5 +1,0 @@
-
-Overall: 
-- Push to GitHub
-- User manual
-- Delete todo file
